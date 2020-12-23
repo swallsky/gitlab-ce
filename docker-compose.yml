@@ -40,17 +40,14 @@ services:
       - GITLAB_POSTGRES_USER=${GITLAB_POSTGRES_USER}
       - GITLAB_POSTGRES_PASSWORD=${GITLAB_POSTGRES_PASSWORD}
       - GITLAB_POSTGRES_DB=${GITLAB_POSTGRES_DB}
-      - POSTGRES_CONFLUENCE_INIT=${CONFLUENCE_POSTGRES_INIT}
-      - POSTGRES_CONFLUENCE_DB=${CONFLUENCE_POSTGRES_DB}
-      - POSTGRES_CONFLUENCE_USER=${CONFLUENCE_POSTGRES_USER}
-      - POSTGRES_CONFLUENCE_PASSWORD=${CONFLUENCE_POSTGRES_PASSWORD}
     networks:
       - backend
       
   ### Gitlab ################################################
   gitlab:
-    build:
-      context: ./gitlab
+    image: 'registry.cn-hangzhou.aliyuncs.com/lab99/gitlab-ce-zh:latest'
+    # build:
+      # context: ./gitlab
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url '${GITLAB_DOMAIN_NAME}'

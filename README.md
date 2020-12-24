@@ -1,3 +1,8 @@
-gitlab  
-
-https://www.cnblogs.com/xuanmanstein/p/7643507.html
+### 编译镜像
+```
+docker-compose build
+```
+### 启动
+```
+docker-compose up -d
+```

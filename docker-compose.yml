@@ -33,7 +33,6 @@ services:
 
   ### Gitlab ################################################
   gitlab:
-    # image: 'registry.cn-hangzhou.aliyuncs.com/lab99/gitlab-ce-zh:latest'
     image: 'twang2218/gitlab-ce-zh:11.1.4'
     # hostname: '${GITLAB_DOMAIN_NAME}'
     environment:

@@ -11,81 +11,45 @@ volumes:
     driver: ${VOLUMES_DRIVER}
 
 services:
-  ### Redis ################################################
-  redis:
-    build: ./redis
-    volumes:
-      - ${DATA_PATH_HOST}/redis:/data
-    ports:
-      - "${REDIS_PORT}:6379"
-    networks:
-      - backend
-
-  ### PostgreSQL ###########################################
-  postgres:
-    build:
-      context: ./postgres
-      args:
-        - POSTGRES_VERSION=${POSTGRES_VERSION}
-    volumes:
-      - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data
-      - ${POSTGRES_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
-    ports:
-      - "${POSTGRES_PORT}:5432"
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - GITLAB_POSTGRES_INIT=${GITLAB_POSTGRES_INIT}
-      - GITLAB_POSTGRES_USER=${GITLAB_POSTGRES_USER}
-      - GITLAB_POSTGRES_PASSWORD=${GITLAB_POSTGRES_PASSWORD}
-      - GITLAB_POSTGRES_DB=${GITLAB_POSTGRES_DB}
-    networks:
-      - backend
-      
   ### Gitlab ################################################
   gitlab:
-    image: 'registry.cn-hangzhou.aliyuncs.com/lab99/gitlab-ce-zh:latest'
-    # build:
-      # context: ./gitlab
+    # image: 'registry.cn-hangzhou.aliyuncs.com/lab99/gitlab-ce-zh:latest'
+    image: 'twang2218/gitlab-ce-zh:11.1.4'
+    hostname: '${GITLAB_DOMAIN_NAME}'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url '${GITLAB_DOMAIN_NAME}'
-        redis['enable'] = false
-        nginx['listen_https'] = false
-        nginx['listen_port'] = 80
-        nginx['custom_gitlab_server_config'] = "set_real_ip_from 172.0.0.0/8;\nreal_ip_header X-Real-IP;\nreal_ip_recursive on;"
-        postgresql['enable'] = false
-        gitlab_rails['trusted_proxies'] = ['caddy','nginx','apache2']
-        gitlab_rails['redis_host'] = 'redis'
-        gitlab_rails['redis_database'] = 8
-        gitlab_rails['db_host'] = '${GITLAB_POSTGRES_HOST}'
-        gitlab_rails['db_username'] = '${GITLAB_POSTGRES_USER}'
-        gitlab_rails['db_password'] = '${GITLAB_POSTGRES_PASSWORD}'
-        gitlab_rails['db_database'] = '${GITLAB_POSTGRES_DB}'
-        gitlab_rails['initial_root_password'] = '${GITLAB_ROOT_PASSWORD}'
-        gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_HOST_SSH_PORT}
+        gitlab_rails['time_zone'] = 'Asia/Shanghai'
+        # 需要配置到 gitlab.rb 中的配置可以在这里配置，每个配置一行，注意缩进。
+        # 比如下面的电子邮件的配置：
+        # gitlab_rails['smtp_enable'] = true
+        # gitlab_rails['smtp_address'] = "smtp.exmail.qq.com"
+        # gitlab_rails['smtp_port'] = 465
+        # gitlab_rails['smtp_user_name'] = "xxxx@xx.com"
+        # gitlab_rails['smtp_password'] = "password"
+        # gitlab_rails['smtp_authentication'] = "login"
+        # gitlab_rails['smtp_enable_starttls_auto'] = true
+        # gitlab_rails['smtp_tls'] = true
+        # gitlab_rails['gitlab_email_from'] = 'xxxx@xx.com'
     volumes:
       - ${DATA_PATH_HOST}/gitlab/config:/etc/gitlab
       - ${DATA_PATH_HOST}/gitlab/data:/var/opt/gitlab
-      - ${GITLAB_HOST_LOG_PATH}:/var/log/gitlab
+      - ${DATA_PATH_HOST}/gitlab/logs:/var/log/gitlab
     ports:
       - "${GITLAB_HOST_HTTP_PORT}:80"
       - "${GITLAB_HOST_HTTPS_PORT}:443"
       - "${GITLAB_HOST_SSH_PORT}:22"
     networks:
       - backend
-    depends_on:
-      - redis
-      - postgres
-  gitlab-runner:
-    image: gitlab/gitlab-runner:latest
-    environment:
-      - CI_SERVER_URL=${GITLAB_CI_SERVER_URL}
-      - REGISTRATION_TOKEN=${GITLAB_RUNNER_REGISTRATION_TOKEN}
-      - RUNNER_NAME=${COMPOSE_PROJECT_NAME}-runner
-      - REGISTER_NON_INTERACTIVE=${GITLAB_REGISTER_NON_INTERACTIVE}
-      - RUNNER_EXECUTOR=shell
-    volumes:
-      - ${DATA_PATH_HOST}/gitlab/runner:/etc/gitlab-runner
-      - /var/run/docker.sock:/var/run/docker.sock:rw
+  ### Gitlab runner ################################################
+  # gitlab-runner:
+    # image: gitlab/gitlab-runner:latest
+    # environment:
+    #   - CI_SERVER_URL=${GITLAB_CI_SERVER_URL}
+    #   - REGISTRATION_TOKEN=${GITLAB_RUNNER_REGISTRATION_TOKEN}
+    #   - RUNNER_NAME=${COMPOSE_PROJECT_NAME}-runner
+    #   - REGISTER_NON_INTERACTIVE=${GITLAB_REGISTER_NON_INTERACTIVE}
+    #   - RUNNER_EXECUTOR=shell
+    # volumes:
+    #   - ${DATA_PATH_HOST}/gitlab/runner:/etc/gitlab-runner
+    #   - /var/run/docker.sock:/var/run/docker.sock:rw

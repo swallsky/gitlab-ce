@@ -39,13 +39,3 @@ GITLAB_HOST_HTTP_PORT=8989
 GITLAB_HOST_HTTPS_PORT=9898
 GITLAB_HOST_SSH_PORT=2289
 GITLAB_DOMAIN_NAME=http://localhost
-
-### DOCKER REGISTRY ###############################################
-DOCKER_REGISTRY_PORT=5000
-
-### DOCKER WEB UI ###############################################
-DOCKER_WEBUI_REGISTRY_HOST=localhost
-# if have use https proxy please set to 1
-DOCKER_REGISTRY_USE_SSL=0
-DOCKER_REGISTRY_BROWSE_ONLY=false
-DOCKER_WEBUI_PORT=8754

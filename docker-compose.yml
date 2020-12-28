@@ -60,15 +60,33 @@ services:
       - "${GITLAB_HOST_SSH_PORT}:22"
     networks:
       - backend
-  ### Gitlab runner ################################################
-  # gitlab-runner:
-    # image: gitlab/gitlab-runner:latest
-    # environment:
-    #   - CI_SERVER_URL=${GITLAB_CI_SERVER_URL}
-    #   - REGISTRATION_TOKEN=${GITLAB_RUNNER_REGISTRATION_TOKEN}
-    #   - RUNNER_NAME=${COMPOSE_PROJECT_NAME}-runner
-    #   - REGISTER_NON_INTERACTIVE=${GITLAB_REGISTER_NON_INTERACTIVE}
-    #   - RUNNER_EXECUTOR=shell
-    # volumes:
-    #   - ${DATA_PATH_HOST}/gitlab/runner:/etc/gitlab-runner
-    #   - /var/run/docker.sock:/var/run/docker.sock:rw
+
+  ### DOCKER-REGISTRY ################################################
+  docker-registry:
+    build:
+      context: ./docker-registry
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA_PATH_HOST}/docker-registry:/var/lib/registry
+    ports:
+      - "${DOCKER_REGISTRY_PORT}:5000"
+    networks:
+      - backend
+
+### DOCKER-WEB-UI ################################################
+  docker-web-ui:
+    build:
+      context: ./docker-web-ui
+    environment:
+      - TZ=${WORKSPACE_TIMEZONE}
+      - ENV_DOCKER_REGISTRY_HOST=${DOCKER_WEBUI_REGISTRY_HOST}
+      - ENV_DOCKER_REGISTRY_PORT=${DOCKER_WEBUI_REGISTRY_PORT}
+      - ENV_DOCKER_REGISTRY_USE_SSL=${DOCKER_REGISTRY_USE_SSL}
+      - ENV_MODE_BROWSE_ONLY=${DOCKER_REGISTRY_BROWSE_ONLY}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "${DOCKER_WEBUI_PORT}:80"
+    networks:
+      - backend
+

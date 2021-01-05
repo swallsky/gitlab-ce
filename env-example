@@ -20,7 +20,7 @@ COMPOSE_FILE=docker-compose.yml
 COMPOSE_PATH_SEPARATOR=:
 
 # 编排容器的名称前缀
-COMPOSE_PROJECT_NAME=mcn
+COMPOSE_PROJECT_NAME=gitlab
 
 # 添加(容器)主机名的标签，就是往/etc/hosts文件中添加一些记录
 DOCKER_HOST_IP=10.0.75.1
@@ -28,31 +28,14 @@ DOCKER_HOST_IP=10.0.75.1
 # 支持windows路径
 COMPOSE_CONVERT_WINDOWS_PATHS=1
 
+### NGINX #################################################
+# http主机端口
+NGINX_HOST_HTTP_PORT=80
+# https主机默认端口
+NGINX_HOST_HTTPS_PORT=443
+
 ### GITLAB ###############################################
-GITLAB_POSTGRES_INIT=true
 GITLAB_HOST_HTTP_PORT=8989
 GITLAB_HOST_HTTPS_PORT=9898
 GITLAB_HOST_SSH_PORT=2289
 GITLAB_DOMAIN_NAME=http://localhost
-GITLAB_ROOT_PASSWORD=gitlab123
-GITLAB_HOST_LOG_PATH=./logs/gitlab
-GITLAB_POSTGRES_HOST=postgres
-GITLAB_POSTGRES_USER=user_gitlab
-GITLAB_POSTGRES_PASSWORD=user_gitlab
-GITLAB_POSTGRES_DB=gitlab_db
-
-### REDIS #################################################
-REDIS_PORT=6379
-
-### POSTGRES ##############################################
-POSTGRES_VERSION=alpine
-POSTGRES_DB=default
-POSTGRES_USER=default
-POSTGRES_PASSWORD=secret
-POSTGRES_PORT=5432
-POSTGRES_ENTRYPOINT_INITDB=./postgres/docker-entrypoint-initdb.d
-
-### GITLAB-RUNNER ###############################################
-GITLAB_CI_SERVER_URL=http://localhost:8989
-GITLAB_RUNNER_REGISTRATION_TOKEN="<my-registration-token>"
-GITLAB_REGISTER_NON_INTERACTIVE=true

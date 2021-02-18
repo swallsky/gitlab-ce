@@ -33,6 +33,7 @@ services:
 
   ### Gitlab ################################################
   gitlab:
+    restart: always
     image: 'twang2218/gitlab-ce-zh:11.1.4'
     # hostname: '${GITLAB_DOMAIN_NAME}'
     environment:

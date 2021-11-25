@@ -1,5 +1,8 @@
 .DS_Store
 .env
-data/
+data/gitlab/
+data/nginx/logs/
+data/nginx/ssl/
+data/nginx/sites/coder.conf
 logs/
 .vscode/

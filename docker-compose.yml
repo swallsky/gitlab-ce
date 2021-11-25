@@ -43,8 +43,9 @@ services:
     # hostname: '${GITLAB_DOMAIN_NAME}'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url '${GITLAB_DOMAIN_NAME}'
-        gitlab_rails['time_zone'] = 'Asia/Shanghai'
+        external_url '${GITLAB_DOMAIN_NAME}' #gitlab域名
+        gitlab_rails['time_zone'] = 'Asia/Shanghai' # 时区
+        gitlab_rails['gravatar_plain_url'] = 'http://sdn.geekzu.org/avatar/%{hash}?s=%{size}&d=identicon' # 允许自定义头像
         # gitlab_rails['registry_enabled'] = true
         # gitlab_rails['registry_host'] = ''
         # gitlab_rails['registry_port'] = 5000
